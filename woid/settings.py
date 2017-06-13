@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
+import os
 from decouple import config, Csv
 from unipath import Path
 import dj_database_url
@@ -17,19 +18,18 @@ import dj_database_url
 from django.contrib.messages import constants as message_constants
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 PROJECT_DIR = Path(__file__).parent
 
 
-SECRET_KEY = config('SECRET_KEY')
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = '@4fd(88hq6#4pp5rvrmza&ss3a#$8-4^*jz-$9k36_snp#bsru'
 
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
-
-
-MESSAGE_LEVEL = config('MESSAGE_LEVEL', default=message_constants.INFO, cast=int)
-
+ALLOWED_HOSTS = ['0.0.0.0', '.herokuapp.com', '127.0.0.1', 'localhost']
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -78,9 +78,18 @@ WSGI_APPLICATION = 'woid.wsgi.application'
 
 
 DATABASES = {
-    'default': dj_database_url.config(
-      default = config('DATABASE_URL'))
+    'default': {
+        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        # 'NAME': 'solar_energy',
+        # 'USER': 'root',
+        # 'PASSWORD': 'root',
+        # 'HOST': 'localhost',
+        # 'PORT': '',
+    }
 }
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 
 
 
@@ -117,5 +126,5 @@ LOGIN_REDIRECT_URL = '/'
 
 TEMPLATE_CONTEXT_PROCESSORS += ('django.core.context_processors.request',)
 
-NYTIMES_API_KEY = config('NYTIMES_API_KEY')
+NYTIMES_API_KEY = 'fa82406f83ad437db456583fdc576ac7'
 
